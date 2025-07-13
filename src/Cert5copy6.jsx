@@ -93,7 +93,7 @@ const fetchCourseSuggestions = async (value) => {
     if (formData.file) {
       setPreviewUrl(URL.createObjectURL(formData.file));
     } else if (formData.filePath) {
-      setPreviewUrl(`http://localhost:5000/uploads/${formData.filePath}`);
+      setPreviewUrl(`https://certificate-backend.onrender.com/uploads/${formData.filePath}`);
     }
   }, [formData.file, formData.filePath]);
 
