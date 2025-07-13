@@ -345,9 +345,9 @@ const Certp5copy6 = () => {
                     onChange={(e) => setSearchText(e.target.value)}
                     placeholder="Search by Name / RegNo / Certificate Number"
                   />
-                  <button type="button" onClick={handleSearch}>
+                  {/* <button type="button" onClick={handleSearch}>
                     Search
-                  </button>
+                  </button> */}
                   <button
                     id="b1"
                     type="button"
