@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -16,7 +15,6 @@ import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 //   return hex.padStart(16, "0").slice(0, 16).toUpperCase();
 // }
 
-
 function generateCertificateNumber(name, regNo, courseCode) {
   const input = `${name}-${regNo}-${courseCode}`;
   let hash = 0;
@@ -31,7 +29,6 @@ function generateCertificateNumber(name, regNo, courseCode) {
 
   return combined.padEnd(16, "A2QTU").slice(0, 16).toUpperCase(); // use A instead of 0
 }
-
 
 const Certp5copy6 = () => {
   const [formData, setFormData] = useState({
@@ -53,6 +50,7 @@ const Certp5copy6 = () => {
   const [imageName, setImageName] = useState("");
   const [courseSuggestions, setCourseSuggestions] = useState([]);
   const courseRef = useRef(null);
+  const [searchText, setSearchText] = useState("");
 
   const fileInputRef = useRef(null);
 
@@ -60,40 +58,32 @@ const Certp5copy6 = () => {
     if (formData.file) {
       setPreviewUrl(URL.createObjectURL(formData.file));
     } else if (formData.filePath) {
-      setPreviewUrl(`https://certificate-backend.onrender.com/uploads/${formData.filePath}`);
+      setPreviewUrl(
+        `https://certificate-backend.onrender.com/uploads/${formData.filePath}`
+      );
     }
   }, [formData.file, formData.filePath]);
 
+  const fetchCourseSuggestions = async (value) => {
+    try {
+      const response = await axios.get(
+        `https://certificate-backend.onrender.com/api/students/courses/search?q=${value}`
+      );
 
-
-
-const fetchCourseSuggestions = async (value) => {
-  try {
-   const response = await axios.get(
-  `https://certificate-backend.onrender.com/api/students/courses/search?q=${value}`
-);
-
-
-    setCourseSuggestions(response.data);
-  } catch (error) {
-    console.error("Error fetching course suggestions:", error);
-    setCourseSuggestions([]);
-  }
-};
-
-
-
-
-
-
-
-
+      setCourseSuggestions(response.data);
+    } catch (error) {
+      console.error("Error fetching course suggestions:", error);
+      setCourseSuggestions([]);
+    }
+  };
 
   useEffect(() => {
     if (formData.file) {
       setPreviewUrl(URL.createObjectURL(formData.file));
     } else if (formData.filePath) {
-      setPreviewUrl(`https://certificate-backend.onrender.com/uploads/${formData.filePath}`);
+      setPreviewUrl(
+        `https://certificate-backend.onrender.com/uploads/${formData.filePath}`
+      );
     }
   }, [formData.file, formData.filePath]);
 
@@ -129,44 +119,37 @@ const fetchCourseSuggestions = async (value) => {
     fileInputRef.current.click();
   };
 
+  const handleSearch = async () => {
+    try {
+      const searchQuery = formData.regNo; // or whatever user types
 
-const handleSearch = async () => {
-  try {
-    const searchQuery = formData.regNo; // or whatever user types
+      const response = await axios.get(
+        `https://certificate-backend.onrender.com/api/students/search?q=${searchText}`
+      );
 
-  const response = await axios.get(
-  `https://certificate-backend.onrender.com/api/students/search?q=${searchQuery}`
-);
+      const data = response.data;
 
+      const fileNameFromDB = data.file || "";
+      const fileName = fileNameFromDB.split("/").pop();
 
-    const data = response.data;
+      setFormData((prev) => ({
+        ...prev,
+        ...data,
+        file: null, // important: do not set a File object here
+        filePath: fileNameFromDB,
+      }));
 
-    const fileNameFromDB = data.file || "";
-    const fileName = fileNameFromDB.split("/").pop();
-
-      
-  
-
-    setFormData((prev) => ({
-      ...prev,
-      ...data,
-      file: null, // important: do not set a File object here
-      filePath: fileNameFromDB,
-    }));
-
-    setImageName(fileName);
-    setMode("update"); // for showing Update button
-  } catch (error) {
-    if (error.response && error.response.status === 404) {
-      alert("❌ Student not found. Please check the value or try again.");
-    } else {
-      alert("⚠️ Error fetching student.");
+      setImageName(fileName);
+      setMode("update"); // for showing Update button
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        alert("❌ Student not found. Please check the value or try again.");
+      } else {
+        alert("⚠️ Error fetching student.");
+      }
+      console.error("Error fetching student:", error);
     }
-    console.error("Error fetching student:", error);
-  }
-};
-
-
+  };
 
   const prepareFormData = () => {
     const form = new FormData();
@@ -181,78 +164,76 @@ const handleSearch = async () => {
     return form;
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+    // Step 1: Required fields check
+    const requiredFields = [
+      "fullName",
+      "regNo",
+      "email",
+      "courseCode",
+      "trainerName",
+      "whatsappNumber",
+      "date",
+      "branch",
+      "file",
+    ];
+    const emptyFields = requiredFields.filter((field) => !formData[field]);
 
-  // Step 1: Required fields check
-  const requiredFields = [
-    "fullName",
-    "regNo",
-    "email",
-    "courseCode",
-    "trainerName",
-    "whatsappNumber",
-    "date",
-    "branch",
-    "file",
-  ];
-  const emptyFields = requiredFields.filter((field) => !formData[field]);
-
-  if (emptyFields.length > 0) {
-    alert(`⚠️ Please fill all required fields: ${emptyFields.join(", ")}`);
-    return;
-  }
-
-  // Step 2: Check if regNo already exists in DB
-  try {
-const checkRes = await axios.get(
-  `https://certificate-backend.onrender.com/api/students/check-regno/${formData.regNo}`
-);
-
- 
-    if (checkRes.data.exists) {
-      alert("❌ This Registration Number already exists!");
+    if (emptyFields.length > 0) {
+      alert(`⚠️ Please fill all required fields: ${emptyFields.join(", ")}`);
       return;
     }
-  } catch (checkError) {
-    console.error("Error checking regNo:", checkError);
-    alert("❌ Error verifying registration number.");
-    return;
-  }
 
-  // Step 3: Generate 16-digit certificate number
-  const certificateNumber = generateCertificateNumber(
-    formData.fullName,
-    formData.regNo,
-    formData.courseCode
-  );
+    // Step 2: Check if regNo already exists in DB
+    try {
+      const checkRes = await axios.get(
+        `https://certificate-backend.onrender.com/api/students/check-regno/${formData.regNo}`
+      );
 
-  // Step 4: Append all fields into FormData object (for file upload)
-  try {
-    const data = new FormData();
-    for (const key in formData) {
-      data.append(key, formData[key]);
-    }
-    data.append("certificateNumber", certificateNumber);
-
-    // Step 5: Submit to backend
-    const response = await axios.post(
-      "https://certificate-backend.onrender.com/api/students",
-      data,
-      {
-        headers: { "Content-Type": "multipart/form-data" },
+      if (checkRes.data.exists) {
+        alert("❌ This Registration Number already exists!");
+        return;
       }
+    } catch (checkError) {
+      console.error("Error checking regNo:", checkError);
+      alert("❌ Error verifying registration number.");
+      return;
+    }
+
+    // Step 3: Generate 16-digit certificate number
+    const certificateNumber = generateCertificateNumber(
+      formData.fullName,
+      formData.regNo,
+      formData.courseCode
     );
 
-    alert("✅ Student submitted successfully!");
-    console.log(response.data);
-    resetForm(); // Clear the form after submission
-  } catch (error) {
-    console.error("Error submitting student:", error);
-    alert("❌ Error submitting student data.");
-  }
-};
+    // Step 4: Append all fields into FormData object (for file upload)
+    try {
+      const data = new FormData();
+      for (const key in formData) {
+        data.append(key, formData[key]);
+      }
+      data.append("certificateNumber", certificateNumber);
+
+      // Step 5: Submit to backend
+      const response = await axios.post(
+        "https://certificate-backend.onrender.com/api/students",
+        data,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+
+      alert("✅ Student submitted successfully!");
+      console.log(response.data);
+      resetForm(); // Clear the form after submission
+    } catch (error) {
+      console.error("Error submitting student:", error);
+      alert("❌ Error submitting student data.");
+    }
+  };
 
   const confirmUpdate = async () => {
     try {
@@ -324,11 +305,7 @@ const checkRes = await axios.get(
     window.location.reload(); // Page full refresh aagum
   };
 
-
-
-
   return (
-   
     <div className="m">
       <FontAwesomeIcon
         icon={faXmark}
@@ -364,15 +341,24 @@ const checkRes = await axios.get(
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <input
                     type="text"
-                    name="regNo"
-                    value={formData.regNo}
-                    onChange={handleChange}
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
                     placeholder="Search by Name / RegNo / Certificate Number"
-                    required
-                  /> <button id="b1" type="button" onClick={handleSearch} style={{ marginLeft: '10px' }}>Search</button>
+                  />
+                  <button type="button" onClick={handleSearch}>
+                    Search
+                  </button>
+                  <button
+                    id="b1"
+                    type="button"
+                    onClick={handleSearch}
+                    style={{ marginLeft: "10px" }}
+                  >
+                    Search
+                  </button>
                 </div>
               </div>
-               <div className="form-row">
+              <div className="form-row">
                 <label>Reg No:</label>
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <input
@@ -381,15 +367,12 @@ const checkRes = await axios.get(
                     value={formData.regNo}
                     onChange={handleChange}
                     placeholder="Reg No"
-                    required style={{width:"327px"}}
-                  /> 
-
-       
-
-
+                    required
+                    style={{ width: "327px" }}
+                  />
                 </div>
               </div>
-      
+
               <div className="form-row">
                 <label>Full Name:</label>
                 <input
@@ -401,7 +384,7 @@ const checkRes = await axios.get(
                   placeholder="Enter Your Full Name"
                 />
               </div>
-          
+
               <div className="form-row">
                 <label>Email ID:</label>
                 <input
@@ -415,28 +398,21 @@ const checkRes = await axios.get(
               </div>
               <div className="form-row">
                 <label>Wht Number:</label>
-       
 
-<input
-  type="text"
-  name="whatsappNumber"
-  value={formData.whatsappNumber}
-  onChange={handleChange}
-  onInput={(e) => {
-    e.target.value = e.target.value.replace(/[^0-9]/g, '');
-  }}
-  maxLength={10}
-  pattern="^[0-9]{10}$"
-  title="Please enter exactly 10 digits"
-  placeholder="Enter Your Number"
-  required
-/>
-
-
-
-
-
-
+                <input
+                  type="text"
+                  name="whatsappNumber"
+                  value={formData.whatsappNumber}
+                  onChange={handleChange}
+                  onInput={(e) => {
+                    e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                  }}
+                  maxLength={10}
+                  pattern="^[0-9]{10}$"
+                  title="Please enter exactly 10 digits"
+                  placeholder="Enter Your Number"
+                  required
+                />
               </div>
               <div className="form-row">
                 <label>Branch:</label>
@@ -473,7 +449,7 @@ const checkRes = await axios.get(
                         border: "1px solid #ccc",
                         borderRadius: "4px",
                         position: "absolute",
-                        top:"520px",
+                        top: "520px",
                         zIndex: "10",
                         width: "327px",
                         maxHeight: "122px",
