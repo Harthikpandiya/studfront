@@ -69,9 +69,10 @@ const Certp5copy6 = () => {
 
 const fetchCourseSuggestions = async (value) => {
   try {
-    const response = await axios.get(
-      `http://localhost:5000/api/students/courses/search?q=${value}`
-    );
+   const response = await axios.get(
+  `https://certificate-backend.onrender.com/api/students/courses/search?q=${value}`
+);
+
 
     setCourseSuggestions(response.data);
   } catch (error) {
@@ -133,9 +134,10 @@ const handleSearch = async () => {
   try {
     const searchQuery = formData.regNo; // or whatever user types
 
-    const response = await axios.get(
-      `http://localhost:5000/api/students/search?q=${searchQuery}`
-    );
+  const response = await axios.get(
+  `https://certificate-backend.onrender.com/api/students/search?q=${searchQuery}`
+);
+
 
     const data = response.data;
 
@@ -204,9 +206,10 @@ const handleSubmit = async (e) => {
 
   // Step 2: Check if regNo already exists in DB
   try {
-    const checkRes = await axios.get(
-  `http://localhost:5000/api/students/check-regno/${formData.regNo}`
+const checkRes = await axios.get(
+  `https://certificate-backend.onrender.com/api/students/check-regno/${formData.regNo}`
 );
+
  
     if (checkRes.data.exists) {
       alert("❌ This Registration Number already exists!");
@@ -235,7 +238,7 @@ const handleSubmit = async (e) => {
 
     // Step 5: Submit to backend
     const response = await axios.post(
-      "http://localhost:5000/api/students",
+      "https://certificate-backend.onrender.com/api/students",
       data,
       {
         headers: { "Content-Type": "multipart/form-data" },
@@ -255,7 +258,7 @@ const handleSubmit = async (e) => {
     try {
       const data = prepareFormData();
       const response = await axios.put(
-        `http://localhost:5000/api/students/${formData.regNo}`,
+        `https://certificate-backend.onrender.com/api/students/${formData.regNo}`,
         data,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -282,7 +285,7 @@ const handleSubmit = async (e) => {
 
     try {
       const response = await axios.delete(
-        `http://localhost:5000/api/students/${formData.regNo}`
+        `https://certificate-backend.onrender.com/api/students/${formData.regNo}`
       );
       alert("🗑️ Student deleted successfully");
       console.log(response.data);
