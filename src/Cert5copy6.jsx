@@ -42,16 +42,16 @@ const Certp5copy6 = () => {
   const [courseSuggestions, setCourseSuggestions] = useState([]);
   const courseRef = useRef(null);
   const [searchText, setSearchText] = useState("");
-const [previewUrl, setPreviewUrl] = useState(null);
+// const [previewUrl, setPreviewUrl] = useState(null);
 
 
-  useEffect(() => {
-  if (formData.file) {
-    setPreviewUrl(URL.createObjectURL(formData.file));
-  } else if (formData.filePath) {
-    setPreviewUrl(`https://studback.onrender.com${formData.filePath}`);
-  }
-}, [formData.file, formData.filePath]);
+//   useEffect(() => {
+//   if (formData.file) {
+//     setPreviewUrl(URL.createObjectURL(formData.file));
+//   } else if (formData.filePath) {
+//     setPreviewUrl(`https://studback.onrender.com${formData.filePath}`);
+//   }
+// }, [formData.file, formData.filePath]);
 
 
   
