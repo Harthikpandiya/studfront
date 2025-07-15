@@ -59,7 +59,7 @@ const handleSearch = async () => {
       ...prev,
       ...data,
       file: null, // ⚠️ don’t override with Blob
-      filePath: fileNameFromDB,
+      filePath: data.filePath, 
     }));
 
     setPreviewUrl(`https://studback.onrender.com/uploads/${fileNameFromDB}`); // ✅ Image path
