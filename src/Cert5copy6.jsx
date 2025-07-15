@@ -45,6 +45,37 @@ const Certp5copy6 = () => {
 
   const fileInputRef = useRef(null);
 
+const handleSearch = async () => {
+  try {
+    const searchQuery = searchText;
+
+    const response = await axios.get(
+      `https://studback.onrender.com/api/students/search?q=${searchQuery}`
+    );
+
+    const data = response.data;
+
+    const fileNameFromDB = data.file || "";
+    const fileName = fileNameFromDB.split("/").pop();
+
+    setFormData((prev) => ({
+      ...prev,
+      ...data,
+      file: null,
+      filePath: fileNameFromDB,
+    }));
+
+    setImageName(fileName);
+    setMode("update");
+  } catch (error) {
+    if (error.response && error.response.status === 404) {
+      alert("❌ Student not found. Please check the value or try again.");
+    } else {
+      alert("⚠️ Error fetching student.");
+    }
+    console.error("Error fetching student:", error);
+  }
+};
 
 
 useEffect(() => {
