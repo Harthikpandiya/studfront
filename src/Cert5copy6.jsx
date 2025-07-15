@@ -236,24 +236,24 @@ const prepareFormData = () => {
 //   }
 // };
 
-// const confirmUpdate = async () => {
-//   try {
-//     const data = prepareFormData();
-//     const response = await axios.put(
-//       `https://studback.onrender.com/api/students/${formData.regNo}`,
-//       data,
-//       {
-//         headers: { "Content-Type": "multipart/form-data" },
-//       }
-//     );
-//     alert("✅ Student updated successfully");
-//     console.log(response.data);
-//     resetForm();
-//   } catch (error) {
-//     console.error("❌ Error updating student:", error);
-//     alert("❌ Error updating student data.");
-//   }
-// };
+const confirmUpdate = async () => {
+  try {
+    const data = prepareFormData();
+    const response = await axios.put(
+      `https://studback.onrender.com/api/students/${formData.regNo}`,
+      data,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    );
+    alert("✅ Student updated successfully");
+    console.log(response.data);
+    resetForm();
+  } catch (error) {
+    console.error("❌ Error updating student:", error);
+    alert("❌ Error updating student data.");
+  }
+};
 
 const handleSubmit = async (e) => {
   e.preventDefault();
