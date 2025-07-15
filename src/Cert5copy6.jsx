@@ -157,6 +157,91 @@ const prepareFormData = () => {
   return form;
 };
 
+// const handleSubmit = async (e) => {
+//   e.preventDefault();
+
+//   const requiredFields = [
+//     "fullName",
+//     "regNo",
+//     "email",
+//     "courseCode",
+//     "trainerName",
+//     "whatsappNumber",
+//     "date",
+//     "branch",
+//     "file",
+//   ];
+//   const emptyFields = requiredFields.filter((field) => !formData[field]);
+
+//   if (emptyFields.length > 0) {
+//     alert(`⚠️ Please fill all required fields: ${emptyFields.join(", ")}`);
+//     return;
+//   }
+
+//   try {
+//     const checkRes = await axios.get(
+//       `https://studback.onrender.com/api/students/check-regno/${formData.regNo}`
+//     );
+
+//     if (checkRes.data.exists) {
+//       alert("❌ This Registration Number already exists!");
+//       return;
+//     }
+//   } catch (checkError) {
+//     console.error("Error checking regNo:", checkError);
+//     alert("❌ Error verifying registration number.");
+//     return;
+//   }
+
+//   const certificateNumber = generateCertificateNumber(
+//     formData.fullName,
+//     formData.regNo,
+//     formData.courseCode
+//   );
+
+//   try {
+//     const data = new FormData();
+//     for (const key in formData) {
+//       data.append(key, formData[key]);
+//     }
+//     data.append("certificateNumber", certificateNumber);
+
+//     const response = await axios.post(
+//       "https://studback.onrender.com/api/students",
+//       data,
+//       {
+//         headers: { "Content-Type": "multipart/form-data" },
+//       }
+//     );
+
+//     alert("✅ Student submitted successfully!");
+//     console.log(response.data);
+//     resetForm();
+//   } catch (error) {
+//     console.error("Error submitting student:", error);
+//     alert("❌ Error submitting student data.");
+//   }
+// };
+
+// const confirmUpdate = async () => {
+//   try {
+//     const data = prepareFormData();
+//     const response = await axios.put(
+//       `https://studback.onrender.com/api/students/${formData.regNo}`,
+//       data,
+//       {
+//         headers: { "Content-Type": "multipart/form-data" },
+//       }
+//     );
+//     alert("✅ Student updated successfully");
+//     console.log(response.data);
+//     resetForm();
+//   } catch (error) {
+//     console.error("❌ Error updating student:", error);
+//     alert("❌ Error updating student data.");
+//   }
+// };
+
 const handleSubmit = async (e) => {
   e.preventDefault();
 
@@ -179,6 +264,7 @@ const handleSubmit = async (e) => {
   }
 
   try {
+    // Check for duplicate registration number
     const checkRes = await axios.get(
       `https://studback.onrender.com/api/students/check-regno/${formData.regNo}`
     );
@@ -193,6 +279,7 @@ const handleSubmit = async (e) => {
     return;
   }
 
+  // Generate certificate number
   const certificateNumber = generateCertificateNumber(
     formData.fullName,
     formData.regNo,
@@ -214,8 +301,20 @@ const handleSubmit = async (e) => {
       }
     );
 
+    const responseData = response.data;
+
+    // ✅ Set preview URL and image name for display
+    if (responseData.filePath) {
+      setPreviewUrl(`https://studback.onrender.com${responseData.filePath}`);
+    }
+    if (responseData.file) {
+      setImageName(responseData.file);
+    }
+
     alert("✅ Student submitted successfully!");
-    console.log(response.data);
+    console.log("Submitted Data:", responseData);
+
+    // ✅ Reset form after setting preview info
     resetForm();
   } catch (error) {
     console.error("Error submitting student:", error);
@@ -223,24 +322,15 @@ const handleSubmit = async (e) => {
   }
 };
 
-const confirmUpdate = async () => {
-  try {
-    const data = prepareFormData();
-    const response = await axios.put(
-      `https://studback.onrender.com/api/students/${formData.regNo}`,
-      data,
-      {
-        headers: { "Content-Type": "multipart/form-data" },
-      }
-    );
-    alert("✅ Student updated successfully");
-    console.log(response.data);
-    resetForm();
-  } catch (error) {
-    console.error("❌ Error updating student:", error);
-    alert("❌ Error updating student data.");
-  }
-};
+
+
+
+
+
+
+
+
+  
 
 const handleDelete = async () => {
   if (!formData.regNo) {
