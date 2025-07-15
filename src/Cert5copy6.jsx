@@ -47,25 +47,23 @@ const Certp5copy6 = () => {
 
 const handleSearch = async () => {
   try {
-    const searchQuery = searchText;
-
+    const searchQuery = searchText; // ✅ Fix here
     const response = await axios.get(
       `https://studback.onrender.com/api/students/search?q=${searchQuery}`
     );
 
     const data = response.data;
-
-    const fileNameFromDB = data.file || "";
-    const fileName = fileNameFromDB.split("/").pop();
+    const fileNameFromDB = data.file || ""; // ✅ Ensure file name exists
 
     setFormData((prev) => ({
       ...prev,
       ...data,
-      file: null,
+      file: null, // ⚠️ don’t override with Blob
       filePath: fileNameFromDB,
     }));
 
-    setImageName(fileName);
+    setPreviewUrl(`https://studback.onrender.com/uploads/${fileNameFromDB}`); // ✅ Image path
+    setImageName(fileNameFromDB);
     setMode("update");
   } catch (error) {
     if (error.response && error.response.status === 404) {
@@ -76,6 +74,7 @@ const handleSearch = async () => {
     console.error("Error fetching student:", error);
   }
 };
+
 
 
 useEffect(() => {
