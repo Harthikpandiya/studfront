@@ -407,7 +407,7 @@ const handleDelete = async () => {
         style={{
           fontSize: "30px",
           position: "relative",
-          left: "139%",
+            left: "40%",
           padding: "10px",
         }}
         className="fntc"
