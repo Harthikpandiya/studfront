@@ -463,7 +463,7 @@ const handleDelete = async () => {
                     onChange={handleChange}
                     placeholder="Reg No"
                     required
-                    style={{ width: "327px" }}
+                    
                   />
                 </div>
               </div>
