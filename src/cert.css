@@ -36,7 +36,8 @@ body {
 .form-row label {
   float: left;
   width: 150px;
-  font-weight: 600;
+  font-weight: 600; 
+ 
   
   /* margin-right: 10px; */
  
@@ -237,6 +238,7 @@ button[type="submit"]:hover {
 
 .m{
   display: flex;
+  flex-direction: row;
   width: 100%;
     min-width: 750px;
   max-width: 900px;
@@ -252,6 +254,7 @@ button[type="submit"]:hover {
   width: 500px;
   height: 500px;
   transform: translateY(20%);
+ 
 }
 .m1{
   width: 100%;
@@ -285,8 +288,8 @@ body {
   display: flex;
   flex-direction: column;
   padding: 20px;
-      min-width: 450px;
-  max-width: 900px;
+      /* min-width: 450px;
+  max-width: 900px; */
   width: 100%;
   gap: 30px;
   align-items: center;
@@ -391,3 +394,19 @@ body {
   background-color: #0056b3;
 }
 
+@media (max-width: 600px) {
+  .preview-container {
+    padding: 10px;
+  }
+
+  .preview-container img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .form-row,
+  .preview-field {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
