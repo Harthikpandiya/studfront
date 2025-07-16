@@ -29,7 +29,10 @@ body {
 
 /* -------- Main Form Container -------- */
 .m {
-  display: flex;
+  
+    display: flex;
+  justify-content: center;
+  align-items: center;
   flex-wrap: wrap;
   width: 100%;
   max-width: 900px;
@@ -45,6 +48,9 @@ html {
 }
 
 .m1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   width: 100%;
   background: #fff;
   border-radius: 10px;
