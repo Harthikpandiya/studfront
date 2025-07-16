@@ -455,7 +455,7 @@ const handleDelete = async () => {
               </div>
               <div className="form-row">
                 <label>Reg No:</label>
-                <div style={{ display: "flex", alignItems: "center" }}>
+                <div >
                   <input
                     type="text"
                     name="regNo"
