@@ -455,7 +455,7 @@ const handleDelete = async () => {
               </div>
               <div className="form-row">
                 <label>Reg No:</label>
-                <div >
+               
                   <input
                     type="text"
                     name="regNo"
@@ -465,7 +465,7 @@ const handleDelete = async () => {
                     required
                     
                   />
-                </div>
+                
               </div>
 
               <div className="form-row">
