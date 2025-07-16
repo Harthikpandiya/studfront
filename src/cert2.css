@@ -23,7 +23,9 @@ body {
   justify-content: center;
   align-items: center;
   padding: 20px;
+  overflow-x: hidden; /* Add this to remove horizontal scroll */
 }
+
 
 /* -------- Main Form Container -------- */
 .m {
@@ -34,7 +36,12 @@ body {
   background: #fff;
   border-radius: 10px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  margin: 0 auto;
+  margin: auto;
+  overflow: hidden;
+}
+
+html {
+  overflow-x: hidden;
 }
 
 .m1 {
